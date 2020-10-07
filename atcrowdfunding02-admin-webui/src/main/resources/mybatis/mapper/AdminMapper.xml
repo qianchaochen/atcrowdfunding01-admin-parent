@@ -225,4 +225,9 @@
       create_time = #{createTime,jdbcType=CHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!--根据姓名进行模糊匹配-->
+  <select id="selectByUserNameLike" parameterType="String" resultMap="BaseResultMap">
+    select * from t_admin where user_name like concat("%" , #{_parameter} , "%")
+  </select>
 </mapper>
