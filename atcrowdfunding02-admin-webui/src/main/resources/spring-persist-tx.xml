@@ -34,6 +34,9 @@
             <!--配置增删改方法，配置事务的传播行为，回滚异常-->
             <!--rollback-for:配置事务方法针对什么样的异常进行回滚-->
             <tx:method name="save*" propagation="REQUIRES_NEW" rollback-for="Exception"/>
+            <tx:method name="update*" propagation="REQUIRES_NEW" rollback-for="Exception"/>
+            <tx:method name="remove*" propagation="REQUIRES_NEW" rollback-for="Exception"/>
+            <tx:method name="delete*" propagation="REQUIRES_NEW" rollback-for="Exception"/>
 
         </tx:attributes>
     </tx:advice>
