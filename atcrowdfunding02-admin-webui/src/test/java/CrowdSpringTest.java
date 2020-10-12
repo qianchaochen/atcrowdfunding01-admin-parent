@@ -1,7 +1,10 @@
 import com.atguigu.crowd.entity.Admin;
 import com.atguigu.crowd.mapper.AdminMapper;
+import com.atguigu.crowd.service.AdminService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -16,14 +19,25 @@ import java.util.List;
 
 // 指定Spring 给Junit 提供的运行器类
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:spring-persist-mybatis.xml"})
+@ContextConfiguration(locations = {"classpath:spring-persist-mybatis.xml", "classpath:spring-persist-tx.xml"})
 public class CrowdSpringTest {
+
+    public final Logger logger = LoggerFactory.getLogger(CrowdSpringTest.class);
 
     @Autowired
     private DataSource dataSource;
 
     @Autowired
     private AdminMapper adminMapper;
+
+    @Autowired
+    private AdminService adminService;
+
+    @Test
+    public void testTx(){
+        Admin admin = new Admin(null, "test", "test123", "测试", "test@qq.com", null);
+        adminService.saveAdmin(admin);
+    }
 
     /**
      * 测试根据id来进行查找
@@ -49,15 +63,20 @@ public class CrowdSpringTest {
      */
     @Test
     public void testSelectByUserNameLike(){
-        List<Admin> admins = adminMapper.selectByUserNameLike("钱");
+        List<Admin> admins = adminMapper.selectByUserNameLike("");
         for (Admin admin : admins) {
             System.out.println(admin);
+            logger.debug("debug: " + admin);
+            logger.info("info: " + admin);
+            logger.warn("warn: " + admin);
+            logger.error("error: " + admin);
+
         }
     }
 
     /**
      * 测试数据库连接的获取情况
-     * @throws Exception
+     *
      */
     @Test
     public void testConnection () throws Exception {

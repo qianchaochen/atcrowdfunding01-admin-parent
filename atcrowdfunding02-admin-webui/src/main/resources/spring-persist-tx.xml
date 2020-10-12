@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <context:component-scan base-package="com.atguigu.crowd.service.impl" />
+
+    <!--配置事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--引用 数据源-->
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <aop:config>
+        <!--配置切入点表达式-->
+        <aop:pointcut id="pointCut" expression="execution(* *..*Service.*(..))"/>
+
+        <!--将切入点表达式和事务通知关联起来-->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pointCut"/>
+    </aop:config>
+
+    <!--配置事务通知-->
+    <tx:advice id="txAdvice">
+        <!--配置事务的属性-->
+        <tx:attributes>
+            <!--查询方法，配置只读属性-->
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="find*" read-only="true"/>
+            <tx:method name="count*" read-only="true"/>
+            <tx:method name="query*" read-only="true"/>
+
+            <!--配置增删改方法，配置事务的传播行为，回滚异常-->
+            <!--rollback-for:配置事务方法针对什么样的异常进行回滚-->
+            <tx:method name="save*" propagation="REQUIRES_NEW" rollback-for="Exception"/>
+
+        </tx:attributes>
+    </tx:advice>
+
+</beans>
